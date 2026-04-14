@@ -874,4 +874,11 @@
     document.getElementById('langToggle').textContent = currentLang === 'en' ? 'ES' : 'EN';
     document.documentElement.lang = currentLang;
     document.querySelectorAll('[data-en]').forEach(el => {
-      const text = el.getAttribut
+      const text = el.getAttribute(lang === 'en' ? 'data-en' : 'data-es');
+      if (text) el.innerHTML = text;
+    });
+  }
+  setLang('en');
+</script>
+</body>
+</html>
