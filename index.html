@@ -442,8 +442,8 @@
   @media (max-width: 640px) {
     section, nav, nav.scrolled, .hero, footer, .trust-bar, .news-section { padding-left: 1.5rem; padding-right: 1.5rem; }
     .hero { padding-top: 5.5rem; min-height: auto; padding-bottom: 4rem; }
-    .hero-stats { flex-wrap: wrap; gap: 2rem; }
-    .hero-stats > div { min-width: 120px; }
+    .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 1.5rem; }
+    .hero-stats > div { min-width: 0; }
     .products-grid { grid-template-columns: 1fr; }
     .offices-grid { grid-template-columns: repeat(2, 1fr); }
     .contact-info { flex-direction: column; gap: 1.5rem; }
@@ -451,6 +451,8 @@
     .trust-item { justify-content: center; }
     .about-visual { grid-template-columns: 1fr; }
     .news-features { flex-direction: column; align-items: center; gap: 1rem; }
+    .hero-actions { flex-direction: column; gap: 0.75rem; }
+    .hero-actions a, .hero-actions button { width: 100%; text-align: center; justify-content: center; }
 
     .hamburger { display: block; }
     .nav-links {
@@ -462,6 +464,7 @@
     .nav-links a { color: rgba(255,255,255,0.7) !important; font-size: 1rem; letter-spacing: 0.12em; }
     .nav-links a:hover { color: var(--brand-blue-light) !important; }
     .nav-cta { margin-top: 1rem; }
+    .nav-linkedin { display: none; }
   }
 
   /* ═══════════════════ HERO ACTIONS ═══════════════════ */
@@ -801,7 +804,7 @@
   <div class="contact-info reveal">
     <div class="contact-item">
       <div class="contact-item-label">Email</div>
-      <a href="mailto:info@inprodairy.com">info@inprodairy.com</a>
+      <a href="/cdn-cgi/l/email-protection#3851565e57785156484a575c59514a41165b5755"><span class="__cf_email__" data-cfemail="2f464149406f46415f5d404b4e465d56014c4042">[email&#160;protected]</span></a>
     </div>
     <div class="contact-item">
       <div class="contact-item-label" data-en="Phone" data-es="Teléfono">Phone</div>
@@ -826,7 +829,7 @@
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
   // Nav scroll
   const nav = document.getElementById('mainNav');
   window.addEventListener('scroll', () => {
@@ -878,6 +881,9 @@
 
   // Language toggle
   let currentLang = 'en';
+  function toggleLang() {
+    setLang(currentLang === 'en' ? 'es' : 'en');
+  }
   function setLang(lang) {
     currentLang = lang;
     document.getElementById('langToggle').textContent = currentLang === 'en' ? 'ES' : 'EN';
@@ -888,6 +894,7 @@
     });
   }
   setLang('en');
+
 </script>
 </body>
 </html>
