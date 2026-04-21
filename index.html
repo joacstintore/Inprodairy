@@ -52,7 +52,7 @@
 
   /* ═══════════════════ NAV ═══════════════════ */
   nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10000; overflow: visible;
     padding: 1.25rem 4rem;
     display: flex; justify-content: space-between; align-items: center;
     background: rgba(254,253,251,0.95);
@@ -455,16 +455,19 @@
 
     .hamburger { display: block; }
     .nav-links {
-      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: var(--navy); flex-direction: column;
-      justify-content: center; align-items: center; gap: 2rem; z-index: 9999;
-      opacity: 1;
+      display: none;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #0b1a2e; flex-direction: column;
+      justify-content: center; align-items: center; gap: 2rem;
+      z-index: 9998;
+      margin: 0; padding: 0;
     }
     .nav-links.open { display: flex; }
-    .nav-links a { color: rgba(255,255,255,0.7) !important; font-size: 1rem; letter-spacing: 0.12em; }
+    .nav-links a { color: rgba(255,255,255,0.8) !important; font-size: 1.1rem; letter-spacing: 0.12em; }
     .nav-links a:hover { color: var(--brand-blue-light) !important; }
-    .nav-cta { display: none; }
+    .nav-cta { display: none !important; }
     .nav-linkedin { display: none; }
+    .hamburger { z-index: 10001 !important; position: relative; }
   }
 
   /* ═══════════════════ HERO ACTIONS ═══════════════════ */
