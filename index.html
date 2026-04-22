@@ -453,21 +453,9 @@
     .hero-actions { flex-direction: column; gap: 0.75rem; }
     .hero-actions a, .hero-actions button { width: 100%; text-align: center; justify-content: center; }
 
-    .hamburger { display: block; }
-    .nav-links {
-      display: none;
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: #0b1a2e; flex-direction: column;
-      justify-content: center; align-items: center; gap: 2rem;
-      z-index: 9998;
-      margin: 0; padding: 0;
-    }
-    .nav-links.open { display: flex; }
-    .nav-links a { color: rgba(255,255,255,0.8) !important; font-size: 1.1rem; letter-spacing: 0.12em; }
-    .nav-links a:hover { color: var(--brand-blue-light) !important; }
+    .nav-links { display: none !important; }
     .nav-cta { display: none !important; }
     .nav-linkedin { display: none; }
-    .hamburger { z-index: 10001 !important; position: relative; }
   }
 
   /* ═══════════════════ HERO ACTIONS ═══════════════════ */
@@ -494,6 +482,54 @@
   .btn-secondary:hover { border-color: var(--brand-blue); color: var(--brand-blue); transform: translateY(-2px); }
   .btn-secondary svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
 
+
+  /* ═══════════════════ BOTTOM NAV (mobile only) ═══════════════════ */
+  .bottom-nav-mobile { display: none; }
+
+  @media (max-width: 640px) {
+    .bottom-nav-mobile {
+      display: flex;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--navy);
+      border-top: 1px solid rgba(45,170,226,0.15);
+      justify-content: space-around;
+      align-items: center;
+      padding: 0.5rem 0 1.2rem;
+      z-index: 10000;
+    }
+    .bnav-item {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.2rem; text-decoration: none;
+      padding: 0.3rem 0.6rem;
+      position: relative;
+      transition: all 0.2s;
+    }
+    .bnav-item svg {
+      width: 18px; height: 18px;
+      stroke: rgba(255,255,255,0.35); fill: none; stroke-width: 2;
+      transition: stroke 0.2s;
+    }
+    .bnav-item span {
+      font-size: 0.52rem; font-weight: 600;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      transition: color 0.2s;
+    }
+    .bnav-item.active svg { stroke: var(--brand-blue); }
+    .bnav-item.active span { color: var(--brand-blue); }
+    .bnav-item.active::before {
+      content: '';
+      position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+      width: 24px; height: 2px;
+      background: var(--brand-blue);
+      border-radius: 0 0 2px 2px;
+    }
+    /* Add bottom padding to page so content isn't hidden behind nav */
+    body { padding-bottom: 4rem; }
+    /* Hide hamburger-related elements entirely */
+    .hamburger { display: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -517,9 +553,7 @@
       <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
     </a>
     <button class="lang-toggle" id="langToggle" onclick="toggleLang()">ES</button>
-    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+
   </div>
 </nav>
 
@@ -869,18 +903,21 @@
     });
   });
 
-  // Mobile menu
-  function toggleMenu() {
-    document.getElementById('hamburger').classList.toggle('active');
-    document.querySelector('.nav-links').classList.toggle('open');
-  }
-  // Close mobile menu on link click
-  document.querySelectorAll('.nav-links a').forEach(a => {
-    a.addEventListener('click', () => {
-      document.getElementById('hamburger').classList.remove('active');
-      document.querySelector('.nav-links').classList.remove('open');
+  // Bottom nav active state
+  const bnavItems = document.querySelectorAll('.bnav-item');
+  const sections = ['about', 'history', 'products', 'value', 'contact'];
+  function updateBottomNav() {
+    let current = 'about';
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && window.scrollY >= el.offsetTop - 120) current = id;
     });
-  });
+    bnavItems.forEach(item => {
+      item.classList.toggle('active', item.dataset.section === current);
+    });
+  }
+  window.addEventListener('scroll', updateBottomNav);
+  updateBottomNav();
 
   // Language toggle
   let currentLang = 'en';
@@ -899,5 +936,30 @@
   setLang('en');
 
 </script>
+
+<!-- BOTTOM NAV (mobile only) -->
+<nav class="bottom-nav-mobile" id="bottomNav">
+  <a href="#about" class="bnav-item" data-section="about">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span data-en="About" data-es="Nosotros">About</span>
+  </a>
+  <a href="#history" class="bnav-item" data-section="history">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span data-en="History" data-es="Historia">History</span>
+  </a>
+  <a href="#products" class="bnav-item" data-section="products">
+    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    <span data-en="Products" data-es="Productos">Products</span>
+  </a>
+  <a href="#value" class="bnav-item" data-section="value">
+    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <span data-en="Why Us" data-es="Por Qué">Why Us</span>
+  </a>
+  <a href="#contact" class="bnav-item" data-section="contact">
+    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    <span data-en="Contact" data-es="Contacto">Contact</span>
+  </a>
+</nav>
+
 </body>
 </html>
