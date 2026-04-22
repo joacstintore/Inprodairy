@@ -16,7 +16,6 @@
 <meta property="og:locale:alternate" content="es_ES">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Inprodairy — Premium Ingredients for the Food Industry">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self';">
 <meta name="twitter:description" content="U.S.-based distributor of dairy, cocoa, and coffee ingredients. 45+ years bridging the Americas and Europe.">
 <link rel="canonical" href="https://www.inprodairy.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Libre+Franklin:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
@@ -492,14 +491,14 @@
       display: flex !important;
       position: fixed !important;
       bottom: 0 !important;
+      top: auto !important;
       left: 0 !important;
       right: 0 !important;
-      top: auto !important;
       background: var(--navy);
       border-top: 1px solid rgba(45,170,226,0.15);
       justify-content: space-around;
       align-items: center;
-      padding: 0.5rem 0 env(safe-area-inset-bottom, 1.2rem);
+      padding: 0.5rem 0 1.2rem;
       z-index: 10000;
       width: 100%;
     }
@@ -534,6 +533,24 @@
     body { padding-bottom: 4rem; }
     /* Hide hamburger-related elements entirely */
     .hamburger { display: none !important; }
+  }
+
+  @media (max-width: 640px) {
+    /* Disable all fade animations on mobile - prevents blank page on Safari */
+    .hero-eyebrow,
+    .hero h1,
+    .hero-sub,
+    .hero-stats,
+    .hero-actions {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
+    .reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
   }
 </style>
 </head>
@@ -878,26 +895,30 @@
     nav.classList.toggle('scrolled', window.scrollY > 60);
   });
 
-  // Scroll reveal
+  // Scroll reveal - skip on mobile (handled by CSS)
   const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
+  if (window.innerWidth > 640) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px 0px 0px' });
+    reveals.forEach(el => observer.observe(el));
+    requestAnimationFrame(() => {
+      reveals.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          el.classList.add('visible');
+        }
+      });
     });
-  }, { threshold: 0.05, rootMargin: '0px 0px 0px 0px' });
-  reveals.forEach(el => observer.observe(el));
-  // Also trigger any elements already in viewport on load
-  requestAnimationFrame(() => {
-    reveals.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight && rect.bottom > 0) {
-        el.classList.add('visible');
-      }
-    });
-  });
+  } else {
+    // On mobile, mark all as visible immediately
+    reveals.forEach(el => el.classList.add('visible'));
+  }
 
   // Smooth scroll
   document.querySelectorAll('a[href^="#"]').forEach(a => {
@@ -939,19 +960,6 @@
     });
   }
   setLang('en');
-
-  // Fallback: force all hero animated elements visible after 1.5s
-  // Handles cases where CSS animations fail to fire on mobile Safari
-  setTimeout(() => {
-    document.querySelectorAll('.hero-eyebrow, .hero h1, .hero-sub, .hero-stats, .hero-actions').forEach(el => {
-      el.style.opacity = '1';
-      el.style.transform = 'translateY(0)';
-    });
-    // Also trigger any un-revealed elements
-    document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
-      el.classList.add('visible');
-    });
-  }, 1500);
 
 </script>
 
